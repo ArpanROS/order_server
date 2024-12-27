@@ -23,10 +23,8 @@ class OrderStatusPublisher(Node):
                 input_set = set(user_input)
 
                 if input_set == valid_inputs:
-                    # All orders canceled
                     self.publish_status("All orders canceled")
                 else:
-                    # Handle single valid inputs
                     for entry in user_input:
                         if entry in valid_inputs:
                             table_number = entry[1]

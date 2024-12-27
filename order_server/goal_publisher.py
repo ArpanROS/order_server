@@ -13,10 +13,8 @@ class GoalPublisher(Node):
     def __init__(self):
         super().__init__('goal_publisher')
         
-        # Action client to monitor navigation progress
         self.action_client = ActionClient(self, NavigateToPose, '/navigate_to_pose')
 
-        # Predefined locations
         self.kitchen_location = {
             'x': -4.0,
             'y': 1.0,
@@ -80,7 +78,7 @@ class GoalPublisher(Node):
         self.goal_handle = None
         self.navigation_result = None
         self._navigation_complete = threading.Event()
-        self.max_retries = 3  # Maximum number of retry attempts
+        self.max_retries = 3
 
         self.order_canceled = False
         self.canceled_tables = set()
@@ -95,7 +93,7 @@ class GoalPublisher(Node):
                 self.get_logger().info('All orders canceled, returning to kitchen first...')
             self._navigation_complete.set()
         elif "canceled" in msg.data:
-            table_num = int(msg.data[1])  # Extract table number from "Y1 canceled" format
+            table_num = int(msg.data[1])
             self.canceled_tables.add(table_num)
             self.get_logger().info(f'Order for table {table_num} canceled')
 
@@ -184,7 +182,7 @@ class GoalPublisher(Node):
 
     def get_result_callback(self, future):
         status = future.result().status
-        if status == 4:  # 4 corresponds to SUCCESS
+        if status == 4:
             self.get_logger().info('Navigation succeeded!')
             self.navigation_result = True
         else:
@@ -299,8 +297,7 @@ class GoalPublisher(Node):
 def main(args=None):
     rclpy.init(args=args)
     node = GoalPublisher()
-    
-    # Create a thread for ROS spinning
+
     spin_thread = threading.Thread(target=rclpy.spin, args=(node,))
     spin_thread.start()
     
